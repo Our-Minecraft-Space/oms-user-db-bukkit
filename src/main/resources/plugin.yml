@@ -1,0 +1,15 @@
+name: OmsUserDbBukkit
+version: 0.0.1-SNAPSHOT
+description: Calls OMS User DB API from Bukkit servers.
+author: Final Child
+main: space.ourmc.userdb.bukkit.OmsUserDbBukkit
+api-version: 1.13
+commands:
+  userdb:
+    description: Search OMS UserDb
+    usage: /userdb search <"username"/"uuid"> <username/uuid>
+    permission: userdb
+permissions:
+  userdb:
+    description: userdb command
+    default: op
