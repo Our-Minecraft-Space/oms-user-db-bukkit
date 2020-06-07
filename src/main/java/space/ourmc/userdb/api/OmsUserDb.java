@@ -8,7 +8,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -39,7 +38,7 @@ public final class OmsUserDb {
                 });
     }
 
-    public static CompletableFuture<Reports> getReportsOfUsername(String username) {
+    public static CompletableFuture<Reports> searchReports(String username) {
         if (!USERNAME_PATTERN.matcher(username).matches()) {
             throw new IllegalArgumentException("Illegal username");
         }
@@ -56,6 +55,23 @@ public final class OmsUserDb {
 
                     final var value = jsonResponse.getAsJsonObject("value");
                     return new Gson().fromJson(value, Reports.class);
+                });
+    }
+
+    public static CompletableFuture<ReportCountOfUser> getReportCountOfUser(UUID uuid) {
+        final var client = HttpClient.newHttpClient();
+        final var request = HttpRequest.newBuilder(URI.create(ENDPOINT + "report/reportcount/" + uuid.toString().replace("-", "").toLowerCase(Locale.ENGLISH)))
+                .timeout(Duration.ofSeconds(15))
+                .build();
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(response -> {
+                    final var jsonResponse = new JsonParser().parse(response.body()).getAsJsonObject();
+                    if (!jsonResponse.get("success").getAsBoolean()) {
+                        throw new OmsUserDbException(jsonResponse.get("code").getAsInt(), jsonResponse.get("reason").getAsString());
+                    }
+
+                    final var value = jsonResponse.getAsJsonObject("value");
+                    return new Gson().fromJson(value, ReportCountOfUser.class);
                 });
     }
 

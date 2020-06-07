@@ -63,11 +63,17 @@ public final class Report {
                     out.nullValue();
                     return;
                 }
-                out.value(switch (value) {
-                    case USER -> 0;
-                    case OPERATOR -> 1;
-                    case OWNER -> 2;
-                });
+                switch (value) {
+                    case USER:
+                        out.value(0);
+                        break;
+                    case OPERATOR:
+                        out.value(1);
+                        break;
+                    case OWNER:
+                        out.value(2);
+                        break;
+                }
             }
 
             @Override
@@ -75,12 +81,16 @@ public final class Report {
                 if (in.peek() == JsonToken.NULL) {
                     return null;
                 }
-                return switch (in.nextInt()) {
-                    case 0 -> USER;
-                    case 1 -> OPERATOR;
-                    case 2 -> OWNER;
-                    default -> throw new IllegalStateException("Unexpected value: " + in.nextInt());
-                };
+                switch (in.nextInt()) {
+                    case 0:
+                        return USER;
+                    case 1:
+                        return OPERATOR;
+                    case 2:
+                        return OWNER;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + in.nextInt());
+                }
             }
         }
     }
@@ -102,15 +112,29 @@ public final class Report {
                     out.nullValue();
                     return;
                 }
-                out.value(switch (value) {
-                    case DISALLOWED_SOFTWARE -> 0;
-                    case VANDALISM -> 1;
-                    case FRAUD -> 2;
-                    case HACKING -> 3;
-                    case DISPUTE -> 4;
-                    case SPEECH -> 5;
-                    case ETC -> 6;
-                });
+                switch (value) {
+                    case DISALLOWED_SOFTWARE:
+                        out.value(0);
+                        break;
+                    case VANDALISM:
+                        out.value(1);
+                        break;
+                    case FRAUD:
+                        out.value(2);
+                        break;
+                    case HACKING:
+                        out.value(3);
+                        break;
+                    case DISPUTE:
+                        out.value(4);
+                        break;
+                    case SPEECH:
+                        out.value(5);
+                        break;
+                    case ETC:
+                        out.value(6);
+                        break;
+                }
             }
 
             @Override
@@ -118,16 +142,24 @@ public final class Report {
                 if (in.peek() == JsonToken.NULL) {
                     return null;
                 }
-                return switch (in.nextInt()) {
-                    case 0 -> DISALLOWED_SOFTWARE;
-                    case 1 -> VANDALISM;
-                    case 2 -> FRAUD;
-                    case 3 -> HACKING;
-                    case 4 -> DISPUTE;
-                    case 5 -> SPEECH;
-                    case 6 -> ETC;
-                    default -> throw new IllegalStateException("Unexpected value: " + in.nextInt());
-                };
+                switch (in.nextInt()) {
+                    case 0:
+                        return DISALLOWED_SOFTWARE;
+                    case 1:
+                        return VANDALISM;
+                    case 2:
+                        return FRAUD;
+                    case 3:
+                        return HACKING;
+                    case 4:
+                        return DISPUTE;
+                    case 5:
+                        return SPEECH;
+                    case 6:
+                        return ETC;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + in.nextInt());
+                }
             }
         }
     }

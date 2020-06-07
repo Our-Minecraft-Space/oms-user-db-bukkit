@@ -8,6 +8,9 @@ public final class OmsUserDbBukkit extends JavaPlugin  {
     @Override
     public void onEnable() {
         getCommand("userdb").setExecutor(new OmsUserDbCommand(this));
+        if (getServer().getPluginManager().isPluginEnabled("ProtocolLib")) {
+            ReportUrlAlerter.register(this);
+        }
     }
 
 }
