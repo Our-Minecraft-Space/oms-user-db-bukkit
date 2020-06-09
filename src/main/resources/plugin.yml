@@ -1,10 +1,9 @@
 name: OmsUserDbBukkit
-version: 1.0.0
+version: 1.0.1
 description: Calls OMS User DB API from Bukkit servers.
 author: Our Minecraft Space
 website: https://userdb.ourmc.space
 main: space.ourmc.userdb.bukkit.OmsUserDbBukkit
-api-version: '1.13'
 softdepend: [ProtocolLib]
 commands:
   userdb:

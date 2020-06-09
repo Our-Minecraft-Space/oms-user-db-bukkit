@@ -7,11 +7,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import space.ourmc.userdb.api.OmsUserDb;
 import space.ourmc.userdb.api.OmsUserDbException;
+import space.ourmc.userdb.api.Report;
 import space.ourmc.userdb.api.UuidWithoutDashesAdapter;
 import space.ourmc.userdb.api.mojang.Mojang;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -53,8 +55,8 @@ public final class OmsUserDbCommand implements CommandExecutor  {
                     return;
                 }
                 sender.sendMessage(result.count + " result(s) found for " + ChatColor.YELLOW + args[1]);
-                sender.sendMessage("=======================================");
-                var list = result.list;
+                sender.sendMessage("================================================================");
+                List<Report> list = result.list;
                 if (list.size() > 10) {
                     list = list.subList(0, 10);
                 }
@@ -66,10 +68,10 @@ public final class OmsUserDbCommand implements CommandExecutor  {
                     sender.sendMessage("And more...");
                 }
                 sender.sendMessage("More details at " + ChatColor.UNDERLINE + "https://userdb.ourmc.space/user/" + result.list.get(0).user.uuid.toString().replace("-", "").toLowerCase());
-                sender.sendMessage("=======================================");
+                sender.sendMessage("================================================================");
             })).exceptionally(throwable -> {
                 if (throwable instanceof CompletionException && throwable.getCause() instanceof OmsUserDbException) {
-                    var e = (OmsUserDbException) throwable.getCause();
+                    OmsUserDbException e = (OmsUserDbException) throwable.getCause();
                     if (e.code == 404) {
                         plugin.getServer().getScheduler().runTask(plugin, () -> {
                             sender.sendMessage(ChatColor.GREEN + "No results found for " + ChatColor.YELLOW + args[1]);
@@ -105,11 +107,11 @@ public final class OmsUserDbCommand implements CommandExecutor  {
             }
         }
         uuidFuture.thenApply(optionalUuid -> {
-            if (optionalUuid.isEmpty()) {
+            if (!optionalUuid.isPresent()) {
                 sender.sendMessage(ChatColor.RED + "Player with that username doesn't exist!");
                 return null;
             }
-            final var uuid = optionalUuid.get();
+            final UUID uuid = optionalUuid.get();
 
             try {
                 OmsUserDb.getReportsOfUser(uuid).thenAccept(result -> plugin.getServer().getScheduler().runTask(plugin, () -> {
@@ -118,8 +120,8 @@ public final class OmsUserDbCommand implements CommandExecutor  {
                         return;
                     }
                     sender.sendMessage(ChatColor.GOLD.toString() + result.count + ChatColor.GREEN + " result(s) found for " + ChatColor.YELLOW + result.user.username);
-                    sender.sendMessage("=======================================");
-                    var list = result.list;
+                    sender.sendMessage("================================================================");
+                    List<Report> list = result.list;
                     if (list.size() > 10) {
                         list = list.subList(0, 10);
                     }
@@ -131,11 +133,10 @@ public final class OmsUserDbCommand implements CommandExecutor  {
                         sender.sendMessage("And more...");
                     }
                     sender.sendMessage("More details at " + ChatColor.UNDERLINE + "https://userdb.ourmc.space/user/" + uuid.toString().replace("-", "").toLowerCase());
-                    sender.sendMessage("=======================================");
+                    sender.sendMessage("================================================================");
                 })).exceptionally(throwable -> {
-                    System.out.println(throwable);
                     if (throwable instanceof CompletionException && throwable.getCause() instanceof OmsUserDbException) {
-                        var e = (OmsUserDbException) throwable.getCause();
+                        OmsUserDbException e = (OmsUserDbException) throwable.getCause();
                         if (e.code == 404) {
                             plugin.getServer().getScheduler().runTask(plugin, () -> {
                                 sender.sendMessage(ChatColor.GREEN + "No results found for " + ChatColor.YELLOW + args[1]);
